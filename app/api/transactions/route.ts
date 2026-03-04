@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDatabase } from '@/lib/mongodb';
+import { validateApiKey } from '@/lib/apiAuth';
 // import { ObjectId } from 'mongodb';
 
 // ==================== READ (GET ALL) ====================
 export async function GET(request: NextRequest) {
+  const authError = await validateApiKey(request);
+  if (authError) return authError;
+
   try {
     const db = await getDatabase();
     const transactions = await db
@@ -33,6 +37,9 @@ export async function GET(request: NextRequest) {
 
 // ==================== CREATE (POST) ====================
 export async function POST(request: NextRequest) {
+  const authError = await validateApiKey(request);
+  if (authError) return authError;
+
   try {
     const body = await request.json();
     const { date, description, amount, type, category } = body;

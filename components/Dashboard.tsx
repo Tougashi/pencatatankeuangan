@@ -27,11 +27,15 @@ export default function Dashboard() {
     fetchTransactions();
   }, []);
 
+  const API_KEY = process.env.NEXT_PUBLIC_API_KEY ?? '';
+
   // ==================== READ (Fetch All Transactions) ====================
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/transactions');
+      const response = await fetch('/api/transactions', {
+        headers: { 'X-API-Key': API_KEY },
+      });
       if (response.ok) {
         const data = await response.json();
         setTransactions(data);
@@ -90,6 +94,7 @@ export default function Dashboard() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-API-Key': API_KEY,
         },
         body: JSON.stringify(transaction),
       });
@@ -111,6 +116,7 @@ export default function Dashboard() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'X-API-Key': API_KEY,
         },
         body: JSON.stringify(updatedTransaction),
       });
@@ -132,6 +138,7 @@ export default function Dashboard() {
       try {
         const response = await fetch(`/api/transactions/${selectedTransaction.id}`, {
           method: 'DELETE',
+          headers: { 'X-API-Key': API_KEY },
         });
 
         if (response.ok) {
